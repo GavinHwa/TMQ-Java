@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mogujie.tmq</groupId>
+    <artifactId>tmq-parent</artifactId>
+    <version>1.0.0</version>
+
+    <url>https://github.com/baihui212/TMQ-Java</url>
+
+    <properties>
+        <javac.src.version>1.8</javac.src.version>
+        <javac.target.version>1.8</javac.target.version>
+        <version.plugin.bundle>2.5.3</version.plugin.bundle>
+
+        <!-- Generate PackageVersion.java into this directory. -->
+        <packageVersion.dir>com/mogujie/tmq/src/java</packageVersion.dir>
+        <packageVersion.package>${project.groupId}.json</packageVersion.package>
+    </properties>
+
+
+    <modules>
+        <module>tmq-client</module>
+        <module>tmq_broker</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <source>${javac.src.version}</source>
+                    <encoding>UTF-8</encoding>
+                    <maxmemory>512m</maxmemory>
+                    <links>
+                        <link>http://docs.oracle.com/javase/7/docs/api/</link>
+                    </links>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.plugin.surefire}</version>
+                <configuration>
+                    <redirectTestOutputToFile>${surefire.redirectTestOutputToFile}</redirectTestOutputToFile>
+                    <excludes>
+                        <exclude>**/failing/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- Inherited from oss-base. Generate PackageVersion.java.-->
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <executions>
+                    <execution>
+                        <id>process-packageVersion</id>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                    <source>1.6</source>
+                    <encoding>UTF-8</encoding>
+                    <maxmemory>1g</maxmemory>
+                    <links>
+                        <link>http://docs.oracle.com/javase/7/docs/api/</link>
+                    </links>
+                    <excludePackageNames>${javadoc.package.exclude}</excludePackageNames>
+                    <bootclasspath>${sun.boot.class.path}</bootclasspath>
+                    <doclet>com.google.doclava.Doclava</doclet>
+                    <useStandardDocletOptions>false</useStandardDocletOptions>
+                    <additionalJOption>-J-Xmx1024m</additionalJOption>
+                    <docletArtifact>
+                        <groupId>com.google.doclava</groupId>
+                        <artifactId>doclava</artifactId>
+                        <version>1.0.3</version>
+                    </docletArtifact>
+                    <additionalparam>
+                        -hdf project.name "${project.name} ${project.version}"
+                        -d ${project.reporting.outputDirectory}/apidocs
+                    </additionalparam>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>default</id>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>
